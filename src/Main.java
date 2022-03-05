@@ -35,9 +35,11 @@ public class Main {
                 }
             } catch (IOException e) {
                 System.err.println("Не удалось создать " + tempFile);
+                writeToTempFileFailed(tempFile);
             }
         } else {
             System.err.println("Не удалось создать каталог " + temp);
+            writeToTempFileFailed(temp);
         }
 
         //Создаём остальные папки
@@ -46,6 +48,7 @@ public class Main {
                 writeToTempFile(directory);
             } else {
                 System.err.println("Не удалось создать каталог " + directory);
+                writeToTempFileFailed(directory);
             }
         }
 
@@ -57,7 +60,21 @@ public class Main {
                 }
             } catch (IOException e) {
                 System.err.println("Не удалось создать файл: " + file);
+                writeToTempFileFailed(file);
             }
+        }
+    }
+
+    private static void writeToTempFileFailed(File file) {
+        try (FileWriter writeTempFile = new FileWriter(USERPATH + "/temp/temp.txt", true)) {
+            if (file.getName().contains(".")) {
+                writeTempFile.write("Не удалось создать файл: " + file);
+            } else {
+                writeTempFile.write("Не удалось создать каталог: " + file);
+            }
+            writeTempFile.write('\n');
+        } catch (IOException ex) {
+            System.err.println("Не удалось записать в файл строчку: " + file);
         }
     }
 
